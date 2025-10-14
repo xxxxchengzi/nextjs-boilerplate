@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>黄金挖矿大师</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #fff;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        .game-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid #ffd700;
+        }
+
+        .game-stats {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .stat-icon {
+            font-size: 24px;
+        }
+
+        .gold-icon {
+            color: #ffd700;
+        }
+
+        .level-icon {
+            color: #00ff88;
+        }
+
+        .energy-icon {
+            color: #ff6b6b;
+        }
+
+        .mining-area {
+            position: absolute;
+            top: 80px;
+            left: 0;
+            right: 0;
+            bottom: 100px;
+            background: linear-gradient(180deg, #8B4513 0%, #654321 30%, #4A4A4A 60%, #2F2F2F 100%);
+            overflow: hidden;
+        }
+
+        .ground-layers {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .ground-layer {
+            position: absolute;
+            width: 100%;
+            height: 20%;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            padding: 10px;
+        }
+
+        .layer-1 { top: 0%; background: rgba(139, 69, 19, 0.3); }
+        .layer-2 { top: 20%; background: rgba(101, 67, 33, 0.4); }
+        .layer-3 { top: 40%; background: rgba(85, 85, 85, 0.5); }
+        .layer-4 { top: 60%; background: rgba(74, 74, 74, 0.6); }
+        .layer-5 { top: 80%; background: rgba(47, 47, 47, 0.7); }
+
+        .mineral {
+            position: absolute;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+        }
+
+        .mineral:hover {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+        }
+
+        .mineral.mined {
+            animation: mineEffect 0.5s ease-out forwards;
+        }
+
+        @keyframes mineEffect {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.5);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(0);
+                opacity: 0;
+            }
+        }
+
+        .gold {
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle, #ffd700 30%, #ffed4e  70%);
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .gold::before {
+            content: '💎';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+        }
+
+        .silver {
+            width: 25px;
+            height: 25px;
+            background: radial-gradient(circle, #c0c0c0 30%, #e6e6e6 70%);
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .silver::before {
+            content: '⚪';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 18px;
+        }
+
+        .copper {
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #cd7f32 30%, #daa520 70%);
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .copper::before {
+            content: '🟤';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 16px;
+        }
+
+        .gem {
+            width: 35px;
+            height: 35px;
+            background: radial-gradient(circle, #ff1493 30%, #ff69b4 70%);
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .gem::before {
+            content: '💎';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+        }
+
+        .control-panel {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            border-top: 2px solid #ffd700;
+        }
+
+        .tools {
+            display: flex;
+            gap: 15px;
+        }
+
+        .tool {
+            padding: 12px 20px;
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', monospace;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .tool:active {
+            transform: translateY(0);
+        }
+
+        .tool.disabled {
+            background: #666;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .upgrade-tool {
+            background: linear-gradient(45deg, #ff9800, #f57c00);
+        }
+
+        .upgrade-tool:hover {
+            box-shadow: 0 5px 15px rgba(255, 152, 0, 0.4);
+        }
+
+        .special-tool {
+            background: linear-gradient(45deg, #9c27b0, #7b1fa2);
+        }
+
+        .special-tool:hover {
+            box-shadow: 0 5px 15px rgba(156, 39, 176, 0.4);
+        }
+
+        .energy-bar {
+            width: 200px;
+            height: 20px;
+            background: #333;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid #666;
+        }
+
+        .energy-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #ff8e8e);
+            border-radius: 8px;
+            transition: width 0.3s ease;
+            position: relative;
+        }
+
+        .energy-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: energyGlow 2s infinite;
+        }
+
+        @keyframes energyGlow {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .particles {
+            position: absolute;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #ffd700;
+            border-radius: 50%;
+            animation: particle-float 1s ease-out forwards;
+        }
+
+        @keyframes particle-float {
+            0% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.5) translateY(-50px);
+            }
+        }
+
+        .level-up-notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #000;
+            padding: 20px 40px;
+            border-radius: 15px;
+            font-size: 24px;
+            font-weight: 900;
+            z-index: 10000;
+            animation: levelUpPulse 2s ease-out forwards;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+        }
+
+        @keyframes levelUpPulse {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+            20% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+            80% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .game-header {
+                padding: 10px 15px;
+            }
+
+            .game-stats {
+                gap: 15px;
+            }
+
+            .stat-item {
+                font-size: 14px;
+            }
+
+            .stat-icon {
+                font-size: 18px;
+            }
+
+            .control-panel {
+                padding: 15px;
+            }
+
+            .tools {
+                gap: 10px;
+            }
+
+            .tool {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+
+            .energy-bar {
+                width: 150px;
+                height: 15px;
+            }
+
+            .mining-area {
+                top: 60px;
+                bottom: 80px;
+            }
+        }
+
+        .floating-text {
+            position: absolute;
+            font-weight: bold;
+            font-size: 18px;
+            color: #ffd700;
+            pointer-events: none;
+            z-index: 1001;
+            animation: floatUp 1.5s ease-out forwards;
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-80px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <div class="game-stats">
+                <div class="stat-item">
+                    <span class="stat-icon gold-icon">🏆</span>
+                    <span id="goldCount">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon level-icon">⭐</span>
+                    <span>等级 <span id="playerLevel">1</span></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon energy-icon">⚡</span>
+                    <span id="energyText">100/100</span>
+                </div>
+            </div>
+            <div style="font-size: 24px; font-weight: 900; color: #ffd700;">
+                黄金挖矿大师
+            </div>
+        </div>
+
+        <div class="mining-area">
+            <div class="ground-layers">
+                <div class="ground-layer layer-1" data-layer="1"></div>
+                <div class="ground-layer layer-2" data-layer="2"></div>
+                <div class="ground-layer layer-3" data-layer="3"></div>
+                <div class="ground-layer layer-4" data-layer="4"></div>
+                <div class="ground-layer layer-5" data-layer="5"></div>
+            </div>
+        </div>
+
+        <div class="control-panel">
+            <div class="tools">
+                <button class="tool" id="basicTool">基础镐 (消耗: 5⚡)</button>
+                <button class="tool upgrade-tool" id="powerTool">强力镐 (消耗: 10⚡)</button>
+                <button class="tool special-tool" id="explosiveTool">炸药 (消耗: 20⚡)</button>
+                <button class="tool upgrade-tool" id="upgradeTool">升级工具 (50💰)</button>
+            </div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <span style="color: #ff6b6b; font-weight: bold;">能量:</span>
+                <div class="energy-bar">
+                    <div class="energy-fill" id="energyFill"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="particles" id="particles"></div>
+    </div>
+
+    <script>
+        class GoldMinerGame {
+            constructor() {
+                this.gold = 0;
+                this.level = 1;
+                this.energy = 100;
+                this.maxEnergy = 100;
+                this.experience = 0;
+                this.experienceToNext = 100;
+                this.selectedTool = 'basic';
+                this.toolPower = {
+                    basic: { power: 1, cost: 5 },
+                    power: { power: 3, cost: 10 },
+                    explosive: { power: 8, cost: 20 }
+                };
+                this.upgrades = {
+                    pickaxePower: 1,
+                    energyEfficiency: 1,
+                    goldMultiplier: 1
+                };
+
+                this.minerals = [];
+                this.initializeGame();
+                this.bindEvents();
+                this.startEnergyRegeneration();
+                this.generateMinerals();
+            }
+
+            initializeGame() {
+                this.updateUI();
+                this.loadGameData();
+            }
+
+            bindEvents() {
+                document.getElementById('basicTool').addEventListener('click', () => {
+                    this.selectedTool = 'basic';
+                    this.updateToolSelection();
+                });
+
+                document.getElementById('powerTool').addEventListener('click', () => {
+                    this.selectedTool = 'power';
+                    this.updateToolSelection();
+                });
+
+                document.getElementById('explosiveTool').addEventListener('click', () => {
+                    this.selectedTool = 'explosive';
+                    this.updateToolSelection();
+                });
+
+                document.getElementById('upgradeTool').addEventListener('click', () => {
+                    this.upgradeTools();
+                });
+            }
+
+            updateToolSelection() {
+                document.querySelectorAll('.tool').forEach(tool => {
+                    tool.style.border = '2px solid transparent';
+                });
+
+                const toolMap = {
+                    'basic': 'basicTool',
+                    'power': 'powerTool',
+                    'explosive': 'explosiveTool'
+                };
+
+                document.getElementById(toolMap[this.selectedTool]).style.border = '2px solid #ffd700';
+            }
+
+            generateMinerals() {
+                const layers = document.querySelectorAll('.ground-layer');
+
+                layers.forEach((layer, index) => {
+                    layer.innerHTML = '';
+                    const layerNumber = index + 1;
+                    const mineralCount = Math.floor(Math.random() * 5) + 3;
+
+                    for (let i = 0; i < mineralCount; i++) {
+                        const mineral = this.createMineral(layerNumber);
+                        mineral.style.left = Math.random() * 85 + '%';
+                        mineral.style.top = Math.random() * 60 + 20 + '%';
+                        layer.appendChild(mineral);
+                    }
+                });
+            }
+
+            createMineral(layer) {
+                const mineral = document.createElement('div');
+                mineral.className = 'mineral';
+
+                const mineralTypes = [
+                    { type: 'copper', value: 1, probability: 0.5 },
+                    { type: 'silver', value: 5, probability: 0.3 },
+                    { type: 'gold', value: 15, probability: 0.15 },
+                    { type: 'gem', value: 50, probability: 0.05 }
+                ];
+
+                const adjustedProbabilities = mineralTypes.map(m => ({
+                    ...m,
+                    probability: m.probability * (1 + layer * 0.2)
+                }));
+
+                const random = Math.random();
+                let cumulativeProbability = 0;
+                let selectedType = mineralTypes[0];
+
+                for (const type of adjustedProbabilities) {
+                    cumulativeProbability += type.probability;
+                    if (random <= cumulativeProbability) {
+                        selectedType = type;
+                        break;
+                    }
+                }
+
+                mineral.classList.add(selectedType.type);
+                mineral.dataset.value = selectedType.value * layer;
+                mineral.dataset.type = selectedType.type;
+
+                mineral.addEventListener('click', (e) => {
+                    this.mineMineral(e.target);
+                });
+
+                return mineral;
+            }
+
+            mineMineral(mineral) {
+                const toolCost = this.toolPower[this.selectedTool].cost / this.upgrades.energyEfficiency;
+
+                if (this.energy < toolCost) {
+                    this.showFloatingText(mineral, '能量不足!', '#ff6b6b');
+                    return;
+                }
+
+                this.energy -= toolCost;
+
+                const baseValue = parseInt(mineral.dataset.value);
+                const toolMultiplier = this.toolPower[this.selectedTool].power * this.upgrades.pickaxePower;
+                const goldEarned = Math.floor(baseValue * toolMultiplier * this.upgrades.goldMultiplier);
+
+                this.gold += goldEarned;
+                this.experience += Math.floor(goldEarned / 2);
+
+                this.showFloatingText(mineral, `+${goldEarned}💰`, '#ffd700');
+                this.createParticles(mineral);
+
+                mineral.classList.add('mined');
+                setTimeout(() => {
+                    mineral.remove();
+                }, 500);
+
+                this.checkLevelUp();
+                this.updateUI();
+
+                if (document.querySelectorAll('.mineral').length <= 5) {
+                    setTimeout(() => {
+                        this.generateMinerals();
+                    }, 1000);
+                }
+            }
+
+            createParticles(element) {
+                const rect = element.getBoundingClientRect();
+                const particleContainer = document.getElementById('particles');
+
+                for (let i = 0; i < 8; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = rect.left + rect.width / 2 + (Math.random() - 0.5) * 40 + 'px';
+                    particle.style.top = rect.top + rect.height / 2 + (Math.random() - 0.5) * 40 + 'px';
+
+                    particleContainer.appendChild(particle);
+
+                    setTimeout(() => {
+                        particle.remove();
+                    }, 1000);
+                }
+            }
+
+            showFloatingText(element, text, color) {
+                const floatingText = document.createElement('div');
+                floatingText.className = 'floating-text';
+                floatingText.textContent = text;
+                floatingText.style.color = color;
+
+                const rect = element.getBoundingClientRect();
+                floatingText.style.left = rect.left + rect.width / 2 + 'px';
+                floatingText.style.top = rect.top + 'px';
+
+                document.body.appendChild(floatingText);
+
+                setTimeout(() => {
+                    floatingText.remove();
+                }, 1500);
+            }
+
+            checkLevelUp() {
+                if (this.experience >= this.experienceToNext) {
+                    this.level++;
+                    this.experience -= this.experienceToNext;
+                    this.experienceToNext = Math.floor(this.experienceToNext * 1.5);
+                    this.maxEnergy += 20;
+                    this.energy = this.maxEnergy;
+
+                    this.showLevelUpNotification();
+                }
+            }
+
+            showLevelUpNotification() {
+                const notification = document.createElement('div');
+                notification.className = 'level-up-notification';
+                notification.textContent = `升级到 ${this.level} 级!`;
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.remove();
+                }, 2000);
+            }
+
+            upgradeTools() {
+                const upgradeCost = 50 * this.level;
+
+                if (this.gold >= upgradeCost) {
+                    this.gold -= upgradeCost;
+
+                    const upgradeType = Math.floor(Math.random() * 3);
+                    switch (upgradeType) {
+                        case 0:
+                            this.upgrades.pickaxePower += 0.5;
+                            this.showFloatingText(document.getElementById('upgradeTool'), '+镐力量!', '#00ff88');
+                            break;
+                        case 1:
+                            this.upgrades.energyEfficiency += 0.2;
+                            this.showFloatingText(document.getElementById('upgradeTool'), '+能量效率!', '#00ff88');
+                            break;
+                        case 2:
+                            this.upgrades.goldMultiplier += 0.3;
+                            this.showFloatingText(document.getElementById('upgradeTool'), '+黄金倍数!', '#00ff88');
+                            break;
+                    }
+
+                    this.updateUI();
+                }
+            }
+
+            startEnergyRegeneration() {
+                setInterval(() => {
+                    if (this.energy < this.maxEnergy) {
+                        this.energy = Math.min(this.maxEnergy, this.energy + 1);
+                        this.updateUI();
+                    }
+                }, 1000);
+            }
+
+            updateUI() {
+                document.getElementById('goldCount').textContent = this.gold;
+                document.getElementById('playerLevel').textContent = this.level;
+                document.getElementById('energyText').textContent = `${this.energy}/${this.maxEnergy}`;
+
+                const energyPercent = (this.energy / this.maxEnergy) * 100;
+                document.getElementById('energyFill').style.width = energyPercent + '%';
+
+                const tools = document.querySelectorAll('.tool');
+                tools.forEach((tool, index) => {
+                    if (index < 3) {
+                        const toolType = ['basic', 'power', 'explosive'][index];
+                        const cost = this.toolPower[toolType].cost / this.upgrades.energyEfficiency;
+                        tool.classList.toggle('disabled', this.energy < cost);
+                    } else {
+                        const upgradeCost = 50 * this.level;
+                        tool.classList.toggle('disabled', this.gold < upgradeCost);
+                        tool.textContent = `升级工具 (${upgradeCost}💰)`;
+                    }
+                });
+
+                this.saveGameData();
+            }
+
+            saveGameData() {
+                const gameData = {
+                    gold: this.gold,
+                    level: this.level,
+                    energy: this.energy,
+                    maxEnergy: this.maxEnergy,
+                    experience: this.experience,
+                    experienceToNext: this.experienceToNext,
+                    upgrades: this.upgrades
+                };
+                localStorage.setItem('goldMinerSave', JSON.stringify(gameData));
+            }
+
+            loadGameData() {
+                const saved = localStorage.getItem('goldMinerSave');
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    this.gold = data.gold || 0;
+                    this.level = data.level || 1;
+                    this.energy = data.energy || 100;
+                    this.maxEnergy = data.maxEnergy || 100;
+                    this.experience = data.experience || 0;
+                    this.experienceToNext = data.experienceToNext || 100;
+                    this.upgrades = data.upgrades || this.upgrades;
+                }
+                this.updateUI();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            new GoldMinerGame();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === '1') game.selectedTool = 'basic';
+            if (e.key === '2') game.selectedTool = 'power';
+            if (e.key === '3') game.selectedTool = 'explosive';
+        });
+    </script>
+</body>
+</html>

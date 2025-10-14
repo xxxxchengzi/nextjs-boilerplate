@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>问候语网页</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        input[type="text"] {
+            padding: 12px 15px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
+            width: 200px;
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #greeting {
+            margin-top: 30px;
+            padding: 20px;
+            font-size: 18px;
+            color: #333;
+            background-color: #e8f4f8;
+            border-radius: 5px;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>问候语生成器</h1>
+
+        <div>
+            <input type="text" id="nameInput" placeholder="请输入您的名字" maxlength="50">
+            <button onclick="showGreeting()">生成问候语</button>
+        </div>
+
+        <div id="greeting">
+            在这里输入您的名字，然后点击按钮看看问候语！
+        </div>
+    </div>
+
+    <script>
+        function showGreeting() {
+            const nameInput = document.getElementById('nameInput');
+            const greetingDiv = document.getElementById('greeting');
+            const name = nameInput.value.trim();
+
+            if (name === '') {
+                greetingDiv.textContent = '请先输入您的名字！';
+                greetingDiv.style.backgroundColor = '#ffe6e6';
+                return;
+            }
+
+            // 获取当前时间
+            const now = new Date();
+            const hour = now.getHours();
+
+            // 根据时间确定问候语
+            let timeGreeting;
+            if (hour >= 5 && hour < 12) {
+                timeGreeting = '早上好';
+            } else if (hour >= 12 && hour < 18) {
+                timeGreeting = '下午好';
+            } else {
+                timeGreeting = '晚上好';
+            }
+
+            greetingDiv.textContent = `${timeGreeting}，${name}！欢迎来到我的魔法世界！`;
+            greetingDiv.style.backgroundColor = '#e8f4f8';
+        }
+
+        // 按Enter键也可以生成问候语
+        document.getElementById('nameInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                showGreeting();
+            }
+        });
+    </script>
+</body>
+</html>

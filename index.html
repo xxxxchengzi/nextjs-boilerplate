@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>忆曲云桑 - 个人主页</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* 头部区域 */
+        .hero-section {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 40px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 24px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .avatar:hover {
+            transform: scale(1.05);
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 16px;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 12px;
+            font-weight: 400;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* 卡片容器 */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
+        }
+
+        .card-content {
+            color: #666;
+            line-height: 1.7;
+        }
+
+        /* 技能标签 */
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .skill-tag {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: transform 0.2s ease;
+        }
+
+        .skill-tag:hover {
+            transform: translateY(-2px);
+        }
+
+        /* 成就列表 */
+        .achievements-list {
+            list-style: none;
+            margin-top: 16px;
+        }
+
+        .achievement-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 16px;
+            padding: 16px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+
+        .achievement-icon {
+            color: #667eea;
+            margin-right: 12px;
+            margin-top: 2px;
+            font-size: 1.1rem;
+        }
+
+        .achievement-text {
+            flex: 1;
+            color: #555;
+        }
+
+        /* 联系方式 */
+        .contact-links {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 12px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+
+        .contact-item:hover {
+            background: rgba(102, 126, 234, 0.15);
+            transform: translateX(8px);
+        }
+
+        .contact-icon {
+            font-size: 1.2rem;
+            color: #667eea;
+            margin-right: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .contact-label {
+            font-weight: 500;
+            margin-right: 8px;
+        }
+
+        .contact-value {
+            color: #666;
+        }
+
+        /* 页脚 */
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+
+        .footer-heart {
+            color: #ff6b6b;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+
+            .hero-title {
+                font-size: 2.2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .hero-description {
+                font-size: 1rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .card {
+                padding: 24px;
+            }
+
+            .avatar {
+                width: 120px;
+                height: 120px;
+            }
+
+            .skills-list {
+                gap: 8px;
+            }
+
+            .skill-tag {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 30px 20px;
+            }
+
+            .hero-title {
+                font-size: 1.8rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .card-title {
+                font-size: 1.3rem;
+            }
+
+            .avatar {
+                width: 100px;
+                height: 100px;
+            }
+        }
+
+        /* 动画效果 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        .card:nth-child(4) { animation-delay: 0.4s; }
+
+        .hero-section {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 头部英雄区域 -->
+        <section class="hero-section">
+            <img src="avatar.jpg" alt="忆曲云桑" class="avatar">
+            <h1 class="hero-title">忆曲云桑</h1>
+            <p class="hero-subtitle">10+财务经验，二胎宝妈</p>
+            <p class="hero-description">热爱读书写作和学习，专注于财务管理与企业服务</p>
+        </section>
+
+        <!-- 主要内容卡片 -->
+        <div class="cards-grid">
+            <!-- 关于我 -->
+            <div class="card">
+                <i class="fas fa-user-circle card-icon"></i>
+                <h2 class="card-title">关于我</h2>
+                <div class="card-content">
+                    <p>我是忆曲云桑，拥有超过10年的财务工作经验，同时也是一位二胎宝妈。在平衡家庭与事业的过程中，我始终保持着对学习的热情，热爱读书写作，不断充实自己的知识储备。</p>
+                    <p style="margin-top: 12px;">我相信，无论身处何种角色，持续学习和成长都是人生最重要的财富。</p>
+                </div>
+            </div>
+
+            <!-- 专业技能 -->
+            <div class="card">
+                <i class="fas fa-briefcase card-icon"></i>
+                <h2 class="card-title">专业技能</h2>
+                <div class="card-content">
+                    <p>在财务领域深耕多年，积累了丰富的实践经验：</p>
+                    <div class="skills-list">
+                        <span class="skill-tag">开发票</span>
+                        <span class="skill-tag">付国外货款</span>
+                        <span class="skill-tag">报税</span>
+                        <span class="skill-tag">银行事务处理</span>
+                        <span class="skill-tag">财务管理</span>
+                        <span class="skill-tag">国际贸易</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 个人成就 -->
+            <div class="card">
+                <i class="fas fa-trophy card-icon"></i>
+                <h2 class="card-title">个人成就</h2>
+                <div class="card-content">
+                    <ul class="achievements-list">
+                        <li class="achievement-item">
+                            <i class="fas fa-newspaper achievement-icon"></i>
+                            <span class="achievement-text">高中时期在《厦门日报》上稿数次，展现了扎实的写作功底</span>
+                        </li>
+                        <li class="achievement-item">
+                            <i class="fas fa-edit achievement-icon"></i>
+                            <span class="achievement-text">为快懂百科完善了几条三星词条，贡献知识分享</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 联系方式 -->
+            <div class="card">
+                <i class="fas fa-envelope card-icon"></i>
+                <h2 class="card-title">联系方式</h2>
+                <div class="card-content">
+                    <p>欢迎与我交流，期待与您的合作：</p>
+                    <div class="contact-links">
+                        <div class="contact-item">
+                            <i class="fab fa-weixin contact-icon"></i>
+                            <span class="contact-label">微信：</span>
+                            <span class="contact-value">chengcheng77</span>
+                        </div>
+                        <a href="https://github.com/xxxxchengzi" class="contact-item" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-github contact-icon"></i>
+                            <span class="contact-label">GitHub：</span>
+                            <span class="contact-value">xxxxchengzi</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页脚 -->
+        <footer class="footer">
+            <p>用 <i class="fas fa-heart footer-heart"></i> 制作 | © 2024 忆曲云桑</p>
+        </footer>
+    </div>
+
+    <script>
+        // 平滑滚动效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 添加视差滚动效果
+            const heroSection = document.querySelector('.hero-section');
+
+            window.addEventListener('scroll', function() {
+                const scrolled = window.pageYOffset;
+                const rate = scrolled * -0.5;
+
+                if (heroSection) {
+                    heroSection.style.transform = `translate3d(0, ${rate}px, 0)`;
+                }
+            });
+
+            // 卡片悬停效果增强
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-12px) scale(1.02)';
+                });
+
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+
+            // 技能标签点击效果
+            const skillTags = document.querySelectorAll('.skill-tag');
+            skillTags.forEach(tag => {
+                tag.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = 'scale(1)';
+                    }, 150);
+                });
+            });
+
+            // 联系方式点击反馈
+            const contactItems = document.querySelectorAll('.contact-item');
+            contactItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    if (this.querySelector('.contact-value').textContent === 'chengcheng77') {
+                        // 微信复制提示
+                        const originalText = this.querySelector('.contact-value').textContent;
+                        this.querySelector('.contact-value').textContent = '已复制到剪贴板';
+
+                        // 复制到剪贴板
+                        navigator.clipboard.writeText('chengcheng77').then(() => {
+                            setTimeout(() => {
+                                this.querySelector('.contact-value').textContent = originalText;
+                            }, 2000);
+                        }).catch(() => {
+                            this.querySelector('.contact-value').textContent = originalText;
+                        });
+                    }
+                });
+            });
+        });
+
+        // 添加键盘导航支持
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                document.body.classList.add('keyboard-navigation');
+            }
+        });
+
+        document.addEventListener('mousedown', function() {
+            document.body.classList.remove('keyboard-navigation');
+        });
+    </script>
+</body>
+</html>
